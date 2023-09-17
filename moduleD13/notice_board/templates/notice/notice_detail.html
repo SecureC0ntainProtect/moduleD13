@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<span>
+    <h4>
+        {% if Notice.notice_author == user %}
+            <a href="/notice/{{Notice.id}}/comments">Комментарии</a>
+            <a href="/notice/{{Notice.id}}/edit">Редактировать </a>
+            <a href="/notice/{{Notice.id}}/delete">Удалить</a>
+        {% endif %}
+    </h4>
+</span>
+    <div class="notice_detail">
+        <h2>{{Notice.notice_title}}</h2>
+        <h4>{{Notice.notice_text}}</h4>
+        
+        {% for file in dataFiles%}
+            <div class="notice_media">
+                
+                {% if "img" == file.type %}
+                    <img width="320" height = "240" src="{{ MEDIA_URL }}{{file.name}}" alt="img">
+                {% else %}
+                    <video controls="controls" width="320" height="240" preload="preload"> 
+                        <source src="{{ MEDIA_URL }}{{file.name}}" type="video/mp4"></source>
+                    </video> 
+                {% endif %}
+
+            </div>
+        {% endfor %}
+
+        <p>{{Notice.creation_date}}</p>
+        
+        <div class = "notice_comments">
+            Comments
+            {% for comment in comments%}
+                <p>{{comment.user}}</p>
+                <p>{{comment.comment}}</p>
+                <p>{{comment.comment_date}}</p>
+            {% endfor %}
+        </div>
+        
+        <form method="Post"> {% csrf_token %}
+            <div class = "Add_Comment">
+                <textarea class = "comment_area" id="CommentInput" name = "CommentArea"></textarea>
+                <br>
+                <button name = "AddComment">Добавить комментарий</button>
+            </div>
+        </form>
+
+    </div>
+{% endblock %}
+
